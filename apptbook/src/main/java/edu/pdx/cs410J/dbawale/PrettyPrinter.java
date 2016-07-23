@@ -42,28 +42,7 @@ public class PrettyPrinter implements AppointmentBookDumper {
      */
     @Override
     public void dump(AbstractAppointmentBook abstractAppointmentBook) throws IOException {
-        FileOutputStream ostream = new FileOutputStream(filename);
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
-        ArrayList<Appointment> currentAppointments = (ArrayList)abstractAppointmentBook.getAppointments();
-        ostream.write("This appoinment book belongs to: ".getBytes());
-        ostream.write(abstractAppointmentBook.getOwnerName().getBytes());
-        ostream.write("\n".getBytes());
-        String str = "There are " + currentAppointments.size() + " appointments in this appointment book.\n\n";
-        ostream.write(str.getBytes());
-        str = "The appointments are:\n\n";
-        ostream.write(str.getBytes());
-        int i=1;
-        for(Appointment appt : currentAppointments)
-        {
-            str = i + ": " + appt.getDescription() + "\n";
-            ostream.write(str.getBytes());
-            str = "   Starts at: " + df.format(appt.beginTime) + "\t\t" + "Ends at: " + df.format(appt.endTime) + "\n";
-            ostream.write(str.getBytes());
-            long diff = appt.endTime.getTime() - appt.beginTime.getTime();
-            str = "   The duration of this appointment is " + TimeUnit.MILLISECONDS.toMinutes(diff) + " minutes. \n\n";
-            ostream.write(str.getBytes());
-            i++;
-        }
+
     }
 
 
@@ -71,28 +50,30 @@ public class PrettyPrinter implements AppointmentBookDumper {
      * Pretty prints an appointment book to standard out
      * @param book The book to be printed
      */
-    public void printtostdout(AbstractAppointmentBook book)
+    public String getprettystring(AbstractAppointmentBook book)
     {
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
         ArrayList<Appointment> currentAppointments = (ArrayList)book.getAppointments();
-        System.out.print("This appoinment book belongs to: ");
-        System.out.print(book.getOwnerName());
-        System.out.print("\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("This appoinment book belongs to: ");
+        sb.append(book.getOwnerName());
+        sb.append("\n");
         String str = "There are " + currentAppointments.size() + " appointments in this appointment book.\n\n";
-        System.out.print(str);
+        sb.append(str);
         str = "The appointments are:\n\n";
-        System.out.print(str);
+        sb.append(str);
         int i=1;
         for(Appointment appt : currentAppointments)
         {
             str = i + ": " + appt.getDescription() + "\n";
-            System.out.print(str);
+            sb.append(str);
             str = "   Starts at: " + df.format(appt.beginTime) + "\t\t" + "Ends at: " + df.format(appt.endTime) + "\n";
-            System.out.print(str);
+            sb.append(str);
             long diff = appt.endTime.getTime() - appt.beginTime.getTime();
             str = "   The duration of this appointment is " + TimeUnit.MILLISECONDS.toMinutes(diff) + " minutes. \n\n";
-            System.out.print(str);
+            sb.append(str);
             i++;
         }
+        return sb.toString();
     }
 }

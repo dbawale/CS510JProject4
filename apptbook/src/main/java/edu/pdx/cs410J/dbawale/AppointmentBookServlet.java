@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +22,7 @@ import java.util.Map;
 public class AppointmentBookServlet extends HttpServlet
 {
     private final Map<String, String> data = new HashMap<>();
+    private AppointmentBook book = new AppointmentBook();
 
     /**
      * Handles an HTTP GET request from a client by writing the value of the key
@@ -31,12 +35,48 @@ public class AppointmentBookServlet extends HttpServlet
     {
         response.setContentType( "text/plain" );
 
-        String key = getParameter( "key", request );
-        if (key != null) {
-            writeValue(key, response);
 
-        } else {
-            writeAllMappings(response);
+        String owner = getParameter("owner",request);
+        String beginTime = getParameter("beginTime",request);
+        String endTime = getParameter("endTime",request);
+        if(owner==null)
+        {
+            missingRequiredParameter(response,owner);
+        }
+        if(beginTime==null || endTime==null)
+        {
+            //Just return all appointments formatted by PrettyPrinter
+            if(book.getOwnerName()==null)
+            {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment book on server not created");
+            }
+            else if(!book.getOwnerName().equals(owner))
+            {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment book for " + owner + " not available on server");
+            }
+            PrintWriter pw = response.getWriter();
+            PrettyPrinter prettyPrinter = new PrettyPrinter();
+            String str = prettyPrinter.getprettystring(book);
+            pw.write(str);
+            response.setStatus(HttpServletResponse.SC_OK);
+
+        }
+        else
+        {
+            //Return all appointments between startTime and endTime
+            if(book.getOwnerName()==null)
+            {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment book on server not created");
+            }
+            else if(!book.getOwnerName().equals(owner))
+            {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment book for " + owner + " not available on server");
+            }
+            PrintWriter pw = response.getWriter();
+            pw.println("Got owner, beginTime and endTime: " + owner + beginTime + endTime);
+            pw.flush();
+            response.setStatus(HttpServletResponse.SC_OK);
+
         }
     }
 
@@ -49,26 +89,63 @@ public class AppointmentBookServlet extends HttpServlet
     protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
         response.setContentType( "text/plain" );
+        String owner = getParameter("owner",request);
+        String description = getParameter("description",request);
+        String beginTime = getParameter("beginTime",request);
+        String endTime = getParameter("endTime",request);
+        checkAppointmentParameters(response, owner, description, beginTime, endTime);
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+        try {
+            Date startDate = dateFormat.parse(beginTime);
+            Date endDate = dateFormat.parse(endTime);
+            if(book.getOwnerName()==null)
+            {
+                book = new AppointmentBook(owner);
 
-        String key = getParameter( "key", request );
-        if (key == null) {
-            missingRequiredParameter(response, "key");
+            }
+            //else if(book.getOwnerName()!=owner)
+            else if(!book.getOwnerName().equals(owner))
+            {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Owner name not found on server");
+                return;
+            }
+            book.addAppointment(new Appointment(description, startDate,endDate));
+            PrintWriter pw = response.getWriter();
+            pw.println("Added appointment!");
+            response.setStatus( HttpServletResponse.SC_OK);
+        } catch (ParseException e) {
+            String message = "Incorrect Date/Time Format";
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
             return;
         }
+    }
 
-        String value = getParameter( "value", request );
-        if ( value == null) {
-            missingRequiredParameter( response, "value" );
-            return;
+    /**
+     * Checks if the specified parameters are null, and sets error code accordingly
+     * @param response The HttpServletResponse
+     * @param owner The owner passed in the put request
+     * @param description The description passed in the put request
+     * @param beginTime The begin time passed in the put request
+     * @param endTime The end time passed in the put request
+     * @throws IOException
+     */
+    private void checkAppointmentParameters(HttpServletResponse response, String owner, String description, String beginTime, String endTime) throws IOException {
+        if(owner==null)
+        {
+            missingRequiredParameter(response,owner);
         }
-
-        this.data.put(key, value);
-
-        PrintWriter pw = response.getWriter();
-        pw.println(Messages.mappedKeyValue(key, value));
-        pw.flush();
-
-        response.setStatus( HttpServletResponse.SC_OK);
+        if(description==null)
+        {
+            missingRequiredParameter(response,description);
+        }
+        if(beginTime==null)
+        {
+            missingRequiredParameter(response,beginTime);
+        }
+        if(endTime==null)
+        {
+            missingRequiredParameter(response,endTime);
+        }
     }
 
     /**
