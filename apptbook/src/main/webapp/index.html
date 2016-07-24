@@ -26,36 +26,36 @@
 </h2>
 
 
-<div>
-    <form method="get" action="appointments">
-        List all key/value pairs <input type="submit" value="Submit"/>
-    </form>
-</div>
+<!--<div>-->
+    <!--<form method="get" action="appointments">-->
+        <!--List all key/value pairs <input type="submit" value="Submit"/>-->
+    <!--</form>-->
+<!--</div>-->
 
-<div>
-    <form method="get" action="appointments">
-        List value for key <input name="key" type="text" size="10" title="key"/>
-        <input type="submit" value="Submit"/>
-    </form>
-</div>
+<!--<div>-->
+    <!--<form method="get" action="appointments">-->
+        <!--List value for key <input name="key" type="text" size="10" title="key"/>-->
+        <!--<input type="submit" value="Submit"/>-->
+    <!--</form>-->
+<!--</div>-->
+
+<!--<div>-->
+    <!--<form method="post" action="appointments">-->
+        <!--Create a new key/value pair <input name="key" type="text" size="10" title="key"/> /-->
+        <!--<input name="value" type="text" size="10" title="value"/>-->
+        <!--<input type="submit" value="Submit"/>-->
+    <!--</form>-->
+<!--</div>-->
 
 <div>
     <form method="post" action="appointments">
-        Create a new key/value pair <input name="key" type="text" size="10" title="key"/> /
-        <input name="value" type="text" size="10" title="value"/>
+        Create a appointment <br><br>
+        Owner:<input name="owner" type="text" size="10" title="Owner"/>
+        Description:<input name="description" type="text" size="10" title="Description"/>
+        beginTime:<input name="beginTime" type="text" size="10" title="BeginTime"/>
+        endTime:<input name="endTime" type="text" size="10" title="EndTime"/>
         <input type="submit" value="Submit"/>
-    </form>
-</div>
-
-<div>
-    <form method="post" action="appointments">
-        Create a appointment <input name="owner" type="text" size="10" title="Owner"/> /
-        <input name="description" type="text" size="10" title="Description"/>
-        <input name="beginTime" type="text" size="10" title="BeginTime"/>
-        <input name="endTime" type="text" size="10" title="EndTime"/>
-        <input type="submit" value="Submit"/>
-    </form>
-</div>
-
+        </form>
+    </div>
 </body>
 </html>
