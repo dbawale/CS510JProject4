@@ -10,14 +10,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This servlet ultimately provides a REST API for working with an
- * <code>AppointmentBook</code>.  However, in its current state, it is an example
- * of how to use HTTP and Java servlets to store simple key/value pairs.
+ * This servlet provides a REST API for working with an
+ * <code>AppointmentBook</code>.
  */
 public class AppointmentBookServlet extends HttpServlet
 {
@@ -25,10 +25,9 @@ public class AppointmentBookServlet extends HttpServlet
     private AppointmentBook book = new AppointmentBook();
 
     /**
-     * Handles an HTTP GET request from a client by writing the value of the key
-     * specified in the "key" HTTP parameter to the HTTP response.  If the "key"
-     * parameter is not specified, all of the key/value pairs are written to the
-     * HTTP response.
+     * Handles an HTTP GET request from a client by checking the parameters provided
+     * and either returning a pretty printed description of the appointments
+     * or providing a search functionality.
      */
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
@@ -49,10 +48,12 @@ public class AppointmentBookServlet extends HttpServlet
             if(book.getOwnerName()==null)
             {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment book on server not created");
+                return;
             }
             else if(!book.getOwnerName().equals(owner))
             {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment book for " + owner + " not available on server");
+                return;
             }
             PrintWriter pw = response.getWriter();
             PrettyPrinter prettyPrinter = new PrettyPrinter();
@@ -67,23 +68,51 @@ public class AppointmentBookServlet extends HttpServlet
             if(book.getOwnerName()==null)
             {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment book on server not created");
+                return;
             }
             else if(!book.getOwnerName().equals(owner))
             {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment book for " + owner + " not available on server");
+                return;
             }
-            PrintWriter pw = response.getWriter();
-            pw.println("Got owner, beginTime and endTime: " + owner + beginTime + endTime);
-            pw.flush();
+            ArrayList<Appointment> appts = (ArrayList)book.getAppointments();
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+            ArrayList<Appointment> toreturn = new ArrayList<Appointment>();
+            try {
+                Date start = df.parse(beginTime);
+                Date end = df.parse(endTime);
+                for(Appointment appt : appts)
+                {
+                    if(appt.beginTime.compareTo(start)>=0 && appt.beginTime.compareTo(end)<=0)
+                    {
+                        toreturn.add(appt);
+                    }
+                }
+                PrintWriter pw = response.getWriter();
+                PrettyPrinter prettyPrinter = new PrettyPrinter();
+                String prettydesc = prettyPrinter.getprettystringforspecifiedapptlist(toreturn);
+                pw.println("The search returned the following appointments:");
+                pw.println(prettydesc);
+                pw.flush();
+            } catch (ParseException e) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Error in date/time format");
+                return;
+            }
             response.setStatus(HttpServletResponse.SC_OK);
 
         }
     }
 
     /**
-     * Handles an HTTP POST request by storing the key/value pair specified by the
-     * "key" and "value" request parameters.  It writes the key/value pair to the
-     * HTTP response.
+     * Handles an HTTP Post request for adding an appointment to an appointment book.
+     * If the current owner is null, that means an owner has never been set, and a new appointment book
+     * is created.
+     * If the current owner is found on the server, then the appointment is added to the owner's appointment book
+     * If an owner is found on the server, but the passed owner name doesn't match it, then an error is thrown.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
      */
     @Override
     protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException

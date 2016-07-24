@@ -47,7 +47,7 @@ public class PrettyPrinter implements AppointmentBookDumper {
 
 
     /**
-     * Pretty prints an appointment book to standard out
+     * Returns a string of pretty printed appointment books
      * @param book The book to be printed
      */
     public String getprettystring(AbstractAppointmentBook book)
@@ -63,6 +63,38 @@ public class PrettyPrinter implements AppointmentBookDumper {
         str = "The appointments are:\n\n";
         sb.append(str);
         int i=1;
+        PrintCurrentAppointments(df, currentAppointments, sb, i);
+        return sb.toString();
+    }
+
+    /**
+     * Returns a pretty printed list from the given appointment list
+     * @param appts The list of appointments to be pretty printed
+     * @return The pretty printed String.
+     */
+    public String getprettystringforspecifiedapptlist(ArrayList<Appointment> appts)
+    {
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+        ArrayList<Appointment> currentAppointments = appts;
+        StringBuilder sb = new StringBuilder();
+        String str = "There are " + currentAppointments.size() + " appointments in this time period.\n\n";
+        sb.append(str);
+        str = "The appointments are:\n\n";
+        sb.append(str);
+        int i=1;
+        PrintCurrentAppointments(df, currentAppointments, sb, i);
+        return sb.toString();
+    }
+
+    /**
+     * Adds the currentAppointments to a StringBuilder
+     * @param df A DateFormat for formatting dates
+     * @param currentAppointments The list of appointments to be parsed and added
+     * @param sb The StringBuilder to be appended to
+     * @param i To iterate through current appointment number
+     */
+    private void PrintCurrentAppointments(DateFormat df, ArrayList<Appointment> currentAppointments, StringBuilder sb, int i) {
+        String str;
         for(Appointment appt : currentAppointments)
         {
             str = i + ": " + appt.getDescription() + "\n";
@@ -74,6 +106,5 @@ public class PrettyPrinter implements AppointmentBookDumper {
             sb.append(str);
             i++;
         }
-        return sb.toString();
     }
 }

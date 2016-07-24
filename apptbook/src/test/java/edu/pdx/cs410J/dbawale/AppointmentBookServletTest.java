@@ -114,4 +114,49 @@ public class AppointmentBookServletTest {
     verify(response).setStatus(HttpServletResponse.SC_OK);
     verify(pw).println("Added appointment!");
   }
+
+  @Test
+  @Ignore
+  public void testGetWithSearch() throws ServletException, IOException {
+    AppointmentBookServlet servlet = new AppointmentBookServlet();
+    String owner = "deven";
+    String beginTime = "7/22/2016 9:12 PM";
+    String endTime = "7/22/2016 10:12 PM";
+    String description = "lunch";
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    when(request.getParameter("owner")).thenReturn(owner);
+    when(request.getParameter("beginTime")).thenReturn(beginTime);
+    when(request.getParameter("endTime")).thenReturn(endTime);
+    when(request.getParameter("description")).thenReturn(description);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    servlet.doPost(request,response);
+    owner = "deven";
+    beginTime = "7/23/2016 9:12 PM";
+    endTime = "7/22/2016 10:12 PM";
+    description = "lunch";
+    when(request.getParameter("owner")).thenReturn(owner);
+    when(request.getParameter("beginTime")).thenReturn(beginTime);
+    when(request.getParameter("endTime")).thenReturn(endTime);
+    when(request.getParameter("description")).thenReturn(description);
+    servlet.doPost(request,response);
+    owner = "deven";
+    beginTime = "7/24/2016 9:12 PM";
+    endTime = "7/22/2016 10:12 PM";
+    description = "lunch";
+    when(request.getParameter("owner")).thenReturn(owner);
+    when(request.getParameter("beginTime")).thenReturn(beginTime);
+    when(request.getParameter("endTime")).thenReturn(endTime);
+    when(request.getParameter("description")).thenReturn(description);
+    servlet.doPost(request,response);
+    owner = "deven";
+    beginTime = "7/22/2016 9:12 PM";
+    endTime = "7/23/2016 10:12 PM";
+    when(request.getParameter("owner")).thenReturn(owner);
+    when(request.getParameter("beginTime")).thenReturn(beginTime);
+    when(request.getParameter("endTime")).thenReturn(endTime);
+    servlet.doGet(request,response);
+    PrintWriter pw = mock(PrintWriter.class);
+    when(response.getWriter()).thenReturn(pw);
+    verify(response).setStatus(HttpServletResponse.SC_OK);
+  }
 }
