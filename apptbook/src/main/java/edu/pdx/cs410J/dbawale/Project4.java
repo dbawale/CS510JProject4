@@ -14,74 +14,78 @@ public class Project4 {
 
     public static final String MISSING_ARGS = "Missing command line arguments";
 
-    public static void main(String... args) {
-        String hostName = null;
-        String portString = null;
-        String key = null;
-        String value = null;
+    public static void main(String[] args){
 
-        for (String arg : args) {
-            if (hostName == null) {
-                hostName = arg;
-
-            } else if ( portString == null) {
-                portString = arg;
-
-            } else if (key == null) {
-                key = arg;
-
-            } else if (value == null) {
-                value = arg;
-
-            } else {
-                usage("Extraneous command line argument: " + arg);
-            }
-        }
-
-        if (hostName == null) {
-            usage( MISSING_ARGS );
-
-        } else if ( portString == null) {
-            usage( "Missing port" );
-        }
-
-        int port;
-        try {
-            port = Integer.parseInt( portString );
-            
-        } catch (NumberFormatException ex) {
-            usage("Port \"" + portString + "\" must be an integer");
-            return;
-        }
-
-        AppointmentBookRestClient client = new AppointmentBookRestClient(hostName, port);
-
-        HttpRequestHelper.Response response;
-        try {
-            if (key == null) {
-                // Print all key/value pairs
-                response = client.getAllKeysAndValues();
-
-            } else if (value == null) {
-                // Print all values of key
-                response = client.getValues(key);
-
-            } else {
-                // Post the key/value pair
-                response = client.addKeyValuePair(key, value);
-            }
-
-            checkResponseCode( HttpURLConnection.HTTP_OK, response);
-
-        } catch ( IOException ex ) {
-            error("While contacting server: " + ex);
-            return;
-        }
-
-        System.out.println(response.getContent());
-
-        System.exit(0);
     }
+
+//    public static void main(String... args) {
+//        String hostName = null;
+//        String portString = null;
+//        String key = null;
+//        String value = null;
+//
+//        for (String arg : args) {
+//            if (hostName == null) {
+//                hostName = arg;
+//
+//            } else if ( portString == null) {
+//                portString = arg;
+//
+//            } else if (key == null) {
+//                key = arg;
+//
+//            } else if (value == null) {
+//                value = arg;
+//
+//            } else {
+//                usage("Extraneous command line argument: " + arg);
+//            }
+//        }
+//
+//        if (hostName == null) {
+//            usage( MISSING_ARGS );
+//
+//        } else if ( portString == null) {
+//            usage( "Missing port" );
+//        }
+//
+//        int port;
+//        try {
+//            port = Integer.parseInt( portString );
+//
+//        } catch (NumberFormatException ex) {
+//            usage("Port \"" + portString + "\" must be an integer");
+//            return;
+//        }
+//
+//        AppointmentBookRestClient client = new AppointmentBookRestClient(hostName, port);
+//
+//        HttpRequestHelper.Response response;
+//        try {
+//            if (key == null) {
+//                // Print all key/value pairs
+//                response = client.getAllKeysAndValues();
+//
+//            } else if (value == null) {
+//                // Print all values of key
+//                response = client.getValues(key);
+//
+//            } else {
+//                // Post the key/value pair
+//                response = client.addKeyValuePair(key, value);
+//            }
+//
+//            checkResponseCode( HttpURLConnection.HTTP_OK, response);
+//
+//        } catch ( IOException ex ) {
+//            error("While contacting server: " + ex);
+//            return;
+//        }
+//
+//        System.out.println(response.getContent());
+//
+//        System.exit(0);
+//    }
 
     /**
      * Makes sure that the give response has the expected HTTP status code

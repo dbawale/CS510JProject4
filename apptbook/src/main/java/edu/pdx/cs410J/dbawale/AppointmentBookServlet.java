@@ -206,6 +206,7 @@ public class AppointmentBookServlet extends HttpServlet
     {
         String message = Messages.missingRequiredParameter(parameterName);
         response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
+        return;
     }
 
     /**
