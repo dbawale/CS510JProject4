@@ -79,6 +79,11 @@ public class AppointmentBookRestClientIT {
       System.err.println("Could not connect to server " + HOSTNAME + " on " + PORT+ ". Are you sure you're running the server?");
       System.err.println("System sent the message: " + e.getMessage());
     }
+    catch (IllegalArgumentException e)
+    {
+      System.err.println("Could not connect to server " + HOSTNAME + " on " + PORT+ ". Are you sure you're running the server?");
+      System.err.println("System sent the message: " + e.getMessage());
+    }
   }
 
   @Test
