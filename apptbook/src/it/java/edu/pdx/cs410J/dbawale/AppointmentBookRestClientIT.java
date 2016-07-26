@@ -27,44 +27,44 @@ public class AppointmentBookRestClientIT {
     return new AppointmentBookRestClient(HOSTNAME, port);
   }
 
-  @Test
-  @Ignore
-  public void test0RemoveAllMappings() throws IOException {
-    AppointmentBookRestClient client = newAppointmentBookRestClient();
-    Response response = client.removeAllMappings();
-    assertThat(response.getContent(), response.getCode(), equalTo(200));
-  }
-
-  @Test
-  @Ignore
-  public void test1EmptyServerContainsNoMappings() throws IOException {
-    AppointmentBookRestClient client = newAppointmentBookRestClient();
-    Response response = client.getAllKeysAndValues();
-    String content = response.getContent();
-    assertThat(content, response.getCode(), equalTo(200));
-    assertThat(content, containsString(Messages.getMappingCount(0)));
-  }
-
-  @Test
-  @Ignore
-  public void test2AddOneKeyValuePair() throws IOException {
-    AppointmentBookRestClient client = newAppointmentBookRestClient();
-    String testKey = "TEST KEY";
-    String testValue = "TEST VALUE";
-    Response response = client.addKeyValuePair(testKey, testValue);
-    String content = response.getContent();
-    assertThat(content, response.getCode(), equalTo(200));
-    assertThat(content, containsString(Messages.mappedKeyValue(testKey, testValue)));
-  }
-
-  @Test
-  @Ignore
-  public void missingRequiredParameterReturnsPreconditionFailed() throws IOException {
-    AppointmentBookRestClient client = newAppointmentBookRestClient();
-    Response response = client.postToMyURL();
-    assertThat(response.getContent(), containsString(Messages.missingRequiredParameter("key")));
-    assertThat(response.getCode(), equalTo(HttpURLConnection.HTTP_PRECON_FAILED));
-  }
+//  @Test
+//  @Ignore
+//  public void test0RemoveAllMappings() throws IOException {
+//    AppointmentBookRestClient client = newAppointmentBookRestClient();
+//    Response response = client.removeAllMappings();
+//    assertThat(response.getContent(), response.getCode(), equalTo(200));
+//  }
+//
+//  @Test
+//  @Ignore
+//  public void test1EmptyServerContainsNoMappings() throws IOException {
+//    AppointmentBookRestClient client = newAppointmentBookRestClient();
+//    Response response = client.getAllKeysAndValues();
+//    String content = response.getContent();
+//    assertThat(content, response.getCode(), equalTo(200));
+//    assertThat(content, containsString(Messages.getMappingCount(0)));
+//  }
+//
+//  @Test
+//  @Ignore
+//  public void test2AddOneKeyValuePair() throws IOException {
+//    AppointmentBookRestClient client = newAppointmentBookRestClient();
+//    String testKey = "TEST KEY";
+//    String testValue = "TEST VALUE";
+//    Response response = client.addKeyValuePair(testKey, testValue);
+//    String content = response.getContent();
+//    assertThat(content, response.getCode(), equalTo(200));
+//    assertThat(content, containsString(Messages.mappedKeyValue(testKey, testValue)));
+//  }
+//
+//  @Test
+//  @Ignore
+//  public void missingRequiredParameterReturnsPreconditionFailed() throws IOException {
+//    AppointmentBookRestClient client = newAppointmentBookRestClient();
+//    Response response = client.postToMyURL();
+//    assertThat(response.getContent(), containsString(Messages.missingRequiredParameter("key")));
+//    assertThat(response.getCode(), equalTo(HttpURLConnection.HTTP_PRECON_FAILED));
+//  }
 
   @Test
   public void testPutReturnsCorrectResponseCode() throws IOException {

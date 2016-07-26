@@ -37,29 +37,29 @@ public class AppointmentBookServletTest {
     verify(response).setStatus(HttpServletResponse.SC_OK);
   }
 
-  @Test
-  @Ignore
-  public void addOneMapping() throws ServletException, IOException {
-    AppointmentBookServlet servlet = new AppointmentBookServlet();
-
-    String testKey = "TEST KEY";
-    String testValue = "TEST VALUE";
-
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    when(request.getParameter("key")).thenReturn(testKey);
-    when(request.getParameter("value")).thenReturn(testValue);
-
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    PrintWriter pw = mock(PrintWriter.class);
-
-    when(response.getWriter()).thenReturn(pw);
-
-    servlet.doPost(request, response);
-    verify(pw).println(Messages.mappedKeyValue(testKey, testValue));
-    verify(response).setStatus(HttpServletResponse.SC_OK);
-
-    assertThat(servlet.getValueForKey(testKey), equalTo(testValue));
-  }
+//  @Test
+//  @Ignore
+//  public void addOneMapping() throws ServletException, IOException {
+//    AppointmentBookServlet servlet = new AppointmentBookServlet();
+//
+//    String testKey = "TEST KEY";
+//    String testValue = "TEST VALUE";
+//
+//    HttpServletRequest request = mock(HttpServletRequest.class);
+//    when(request.getParameter("key")).thenReturn(testKey);
+//    when(request.getParameter("value")).thenReturn(testValue);
+//
+//    HttpServletResponse response = mock(HttpServletResponse.class);
+//    PrintWriter pw = mock(PrintWriter.class);
+//
+//    when(response.getWriter()).thenReturn(pw);
+//
+//    servlet.doPost(request, response);
+//    verify(pw).println(Messages.mappedKeyValue(testKey, testValue));
+//    verify(response).setStatus(HttpServletResponse.SC_OK);
+//
+//    assertThat(servlet.getValueForKey(testKey), equalTo(testValue));
+//  }
 
   @Test
   @Ignore

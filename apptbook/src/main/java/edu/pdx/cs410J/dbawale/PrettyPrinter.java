@@ -74,6 +74,10 @@ public class PrettyPrinter implements AppointmentBookDumper {
      */
     public String getprettystringforspecifiedapptlist(ArrayList<Appointment> appts)
     {
+        if(appts.size()==0)
+        {
+            return "No appointments are available for the specified duration.";
+        }
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
         ArrayList<Appointment> currentAppointments = appts;
         StringBuilder sb = new StringBuilder();

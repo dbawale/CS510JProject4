@@ -21,7 +21,6 @@ import java.util.Map;
  */
 public class AppointmentBookServlet extends HttpServlet
 {
-    private final Map<String, String> data = new HashMap<>();
     private AppointmentBook book = new AppointmentBook();
 
     /**
@@ -81,6 +80,11 @@ public class AppointmentBookServlet extends HttpServlet
             try {
                 Date start = df.parse(beginTime);
                 Date end = df.parse(endTime);
+                if(start.compareTo(end)>0)
+                {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST,"End time cannot occur before start time");
+                    return;
+                }
                 for(Appointment appt : appts)
                 {
                     if(appt.beginTime.compareTo(start)>=0 && appt.beginTime.compareTo(end)<=0)
@@ -91,7 +95,6 @@ public class AppointmentBookServlet extends HttpServlet
                 PrintWriter pw = response.getWriter();
                 PrettyPrinter prettyPrinter = new PrettyPrinter();
                 String prettydesc = prettyPrinter.getprettystringforspecifiedapptlist(toreturn);
-                pw.println("The search returned the following appointments:");
                 pw.println(prettydesc);
                 pw.flush();
             } catch (ParseException e) {
@@ -177,24 +180,7 @@ public class AppointmentBookServlet extends HttpServlet
         }
     }
 
-    /**
-     * Handles an HTTP DELETE request by removing all key/value pairs.  This
-     * behavior is exposed for testing purposes only.  It's probably not
-     * something that you'd want a real application to expose.
-     */
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/plain");
 
-        this.data.clear();
-
-        PrintWriter pw = response.getWriter();
-        pw.println(Messages.allMappingsDeleted());
-        pw.flush();
-
-        response.setStatus(HttpServletResponse.SC_OK);
-
-    }
 
     /**
      * Writes an error message about a missing parameter to the HTTP response.
@@ -209,44 +195,6 @@ public class AppointmentBookServlet extends HttpServlet
         return;
     }
 
-    /**
-     * Writes the value of the given key to the HTTP response.
-     *
-     * The text of the message is formatted with {@link Messages#getMappingCount(int)}
-     * and {@link Messages#formatKeyValuePair(String, String)}
-     */
-    private void writeValue( String key, HttpServletResponse response ) throws IOException
-    {
-        String value = this.data.get(key);
-
-        PrintWriter pw = response.getWriter();
-        pw.println(Messages.getMappingCount( value != null ? 1 : 0 ));
-        pw.println(Messages.formatKeyValuePair(key, value));
-
-        pw.flush();
-
-        response.setStatus( HttpServletResponse.SC_OK );
-    }
-
-    /**
-     * Writes all of the key/value pairs to the HTTP response.
-     *
-     * The text of the message is formatted with
-     * {@link Messages#formatKeyValuePair(String, String)}
-     */
-    private void writeAllMappings( HttpServletResponse response ) throws IOException
-    {
-        PrintWriter pw = response.getWriter();
-        pw.println(Messages.getMappingCount(data.size()));
-
-        for (Map.Entry<String, String> entry : this.data.entrySet()) {
-            pw.println(Messages.formatKeyValuePair(entry.getKey(), entry.getValue()));
-        }
-
-        pw.flush();
-
-        response.setStatus( HttpServletResponse.SC_OK );
-    }
 
     /**
      * Returns the value of the HTTP request parameter with the given name.
@@ -262,15 +210,5 @@ public class AppointmentBookServlet extends HttpServlet
       } else {
         return value;
       }
-    }
-
-    @VisibleForTesting
-    void setValueForKey(String key, String value) {
-        this.data.put(key, value);
-    }
-
-    @VisibleForTesting
-    String getValueForKey(String key) {
-        return this.data.get(key);
     }
 }

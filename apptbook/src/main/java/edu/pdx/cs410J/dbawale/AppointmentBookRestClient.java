@@ -51,34 +51,4 @@ public class AppointmentBookRestClient extends HttpRequestHelper
     public Response postValuesToServer(String owner, String description, String beginTime, String endTime) throws IOException {
         return post(this.url,"owner",owner,"description",description,"beginTime",beginTime,"endTime",endTime);
     }
-
-    /**
-     * Returns all keys and values from the server
-     */
-    public Response getAllKeysAndValues() throws IOException
-    {
-        return get(this.url );
-    }
-
-    /**
-     * Returns all values for the given key
-     */
-    public Response getValues( String key ) throws IOException
-    {
-        return get(this.url, "key", key);
-    }
-
-    public Response addKeyValuePair( String key, String value ) throws IOException
-    {
-        return postToMyURL("key", key, "value", value);
-    }
-
-    @VisibleForTesting
-    Response postToMyURL(String... keysAndValues) throws IOException {
-        return post(this.url, keysAndValues);
-    }
-
-    public Response removeAllMappings() throws IOException {
-        return delete(this.url);
-    }
 }
